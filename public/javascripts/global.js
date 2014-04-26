@@ -1,15 +1,37 @@
 
 var userListData = [];
 
-${document}.ready(function(){
+/*
+$(window).load(function() {
+    // executes when complete page is fully loaded, including frames,objects and images
+    alert("window is loaded to perform operations");
+}); 
+*/
+
+$(document).ready(function() {
     alert("ready");
-    $('initText').text("ready, populateTable");
+    // Populate the user table on initial page load
     populateTable();
 
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
     $('#btnAddUser').on('click', addUser);
     $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
 });
+/*
+*/
+
+/*
+${document}.ready(function(){
+    alert("ready");
+    //$('initText').text("ready, populateTable");
+    populateTable();
+
+    $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
+    $('#btnAddUser').on('click', addUser);
+    $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
+});
+
+*/
 
 
 function populateTable(){
@@ -18,10 +40,10 @@ function populateTable(){
 
     $.getJSON('/users/userlist', function(data){
         userListData = data;
-        
+
         $.each(data, function(){
             tableContent +='<tr>';
-            tableContent +='<td><a href="#" class="linksshowuser" rel="' +this.username +'" title="Show Details">' + this.username + '</td>';
+            tableContent +='<td><a href="#" class="linkshowuser" rel="' +this.username +'" title="Show Details">' + this.username + '</a></td>';
             tableContent +='<td>' + this.email +'</td>';
             tableContent +='<td><a href="#" class="linkdeleteuser" ref="' +this._id +'">delete</a></td>';
             tableContent += '</tr>';
@@ -34,13 +56,14 @@ function populateTable(){
 function showUserInfo(event){
     event.preventDefault();
 
-    var thisUserName = ${this}.attr('rel');
+    //var thisUserName = ${this}.attr("rel");
+    var thisUserName = 'test1'; 
 
     var arrayPosition = userListData.map(function(arrayItem){
         return arrayItem.username;
     }).indexOf(thisUserName);
 
-    var thisUserObject = userListData[arrayPostion];
+    var thisUserObject = userListData[arrayPosition];
 
     $('#userInfoName').text(thisUserObject.fullname);
     $('#userInfoAge').text(thisUserObject.age);
@@ -53,14 +76,14 @@ function addUser(){
 
     var errorCount = 0;
 
-    $('$addUser input').each(function(index, val){
+    $('#addUser input').each(function(index, val){
         if($(this).val()== ''){
             errorCount++;
         }
     });
 
     if (errorCount == 0){
-         var newUser = {
+        var newUser = {
             'username': $('#addUser fieldset input#inputUserName').val(),
             'email': $('#addUser fieldset input#inputUserEmail').val(),
             'fullname': $('#addUser fieldset input#inputUserFullname').val(),
@@ -71,9 +94,9 @@ function addUser(){
 
         $.ajax({
             type: 'POST',
-            data: newUser,
-            url: '/users/adduser',
-            dataType:'JSON'
+        data: newUser,
+        url: '/users/adduser',
+        dataType:'JSON'
         }).done(function (response){
             if ('' == response.msg){
                 $('#addUser fieldset input').val('');
@@ -82,11 +105,11 @@ function addUser(){
                 alert('Error:' + response.msg);
             }
         });
-        }else{
-            alert('Please fill in all fields');
-            return false;
-        }
-};
+    }else{
+        alert('Please fill in all fields');
+        return false;
+    }
+}
 
 function deleteUser(event){
     event.preventDefault();
@@ -96,7 +119,8 @@ function deleteUser(event){
     if(confirmation == true){
         $.ajax({
             type:'DELETE',
-            url:'/users/deleteuser/' + ${this}.attr('rel')
+            url:'/users/deleteuser/'+ '1234'
+            //url:'/users/deleteuser/' + ${this}.attr('rel')
         }).done(function(response){
             if (response.msg == ''){
             }else{
